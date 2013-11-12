@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class SampleAppGaeDao implements SampleAppDao {
 
-    protected final static String SAMPLE_APP_INSTANCE = "RssFeedAppInstance";
+    protected final static String SAMPLE_APP_INSTANCE = "MediaPlayerInstance";
     protected final static String BAGGAGE = "baggage";
 
     @Resource
