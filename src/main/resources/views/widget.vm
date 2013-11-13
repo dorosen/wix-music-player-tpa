@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/bootswatch/3.0.1/flatly/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/jplayer/jplayer.blue.monday.css" rel="stylesheet">
+    <link href="/static/static/jplayer/jplayer.blue.monday.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
     <script src="http://sslstatic.wix.com/services/js-sdk/1.23.0/js/Wix.js"></script>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha1.js"></script>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/core-min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jplayer/2.4.0/jquery.jplayer.min.js"></script>
-
-
-
+    <script src="/static/static/jplayer/jplayer.playlist.min.js"></script>
 
     <style>
         #container {
@@ -22,14 +20,18 @@
             max-width: 400px;
             margin: 0 auto;
         }
-        .form-group {
-            margin-bottom: 0;
-        }
         .modal-dialog {
             margin-top: 50px;
+            width: 300px;
         }
-        #buy_now {
-            margin-right: 20px;
+        #send_payment {
+            height: 533px;
+        }
+        div.modal-content {
+            background: none;
+            border: none;
+            border-radius: 0;
+            -webkit-box-shadow: none;
         }
 
     </style>
@@ -45,9 +47,9 @@
     <div class="row">
         <div class="col-lg-6">
             <div class="well">
-                <div id="jquery_jplayer_1" class="jp-jplayer"></div>
                 <div id="jp_container_1" class="jp-audio">
-                    <div class="jp-type-single">
+                    <div class="jp-type-playlist">
+                        <div id="jquery_jplayer_1" class="jp-jplayer"></div>
                         <div class="jp-gui jp-interface">
                             <ul class="jp-controls">
                                 <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
@@ -68,20 +70,12 @@
                             <div class="jp-time-holder">
                                 <div class="jp-current-time"></div>
                                 <div class="jp-duration"></div>
-                                <ul class="jp-toggles">
-                                    <li><a href="javascript:;" class="jp-repeat" tabindex="1" title="repeat">repeat</a></li>
-                                    <li><a href="javascript:;" class="jp-repeat-off" tabindex="1" title="repeat off">repeat off</a></li>
-                                </ul>
                             </div>
                         </div>
-                        <div class="jp-title">
+                        <div class="jp-playlist">
                             <ul>
-                                <li>Bubble</li>
+                                <li></li>
                             </ul>
-                        </div>
-                        <div class="jp-no-solution">
-                            <span>Update Required</span>
-                            To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
                         </div>
                     </div>
                 </div>
@@ -103,17 +97,235 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        $("#jquery_jplayer_1").jPlayer({
-            ready: function () {
-                $(this).jPlayer("setMedia", {
-                    m4a: "http://www.jplayer.org/audio/m4a/Miaow-07-Bubble.m4a",
-                    oga: "http://www.jplayer.org/audio/ogg/Miaow-07-Bubble.ogg"
-                });
-            },
-            swfPath: "/js",
-            supplied: "m4a, oga"
-        });
+
+        if ( !getFromLocalStorage('playlist') {
+            playlist.testSavePlaylistToLocalStorage(test_playlist_array);
+        }
+
+        if ( !getFromLocalStorage('settings') {
+            playlist.testSaveSettingsToLocalStorage({
+                api_username: 'checkoutseller_api1.gmail.com',
+                api_password: '1384155179',
+                api_signature: 'Ar0VprKYexghecUS4CZYMCkYFJOYA9eUWoblNZa2nockSEsdBloQMzT8',
+                store_currency: 'USD'
+            });
+        }
+
+        var playlist_array = getFromLocalStorage('playlist');
+        var jplayer_playlist = playlist.generatePlaylistForjPlayer(playlist_array);
+        playlist.buildMusicPlayer(jplayer_playlist);
+
     });
+
+    function getFromLocalStorage(type) {
+        return JSON.parse( localStorage.getItem('music_player_tpa_' + type) );
+    }
+
+    var playlist = {
+        generatePlaylistForjPlayer: function(playlist) {
+
+            var j_playlist = [];
+            var song = {};
+            var this_song = {};
+
+            var playlist_len = playlist.length;
+
+            for ( var i = 0; i < playlist_len; i++ ) {
+                this_song = playlist[i];
+
+                song = {
+                    title: this_song.song_name,
+                    mp3: this_song.song_file
+                };
+
+                j_playlist.push(song);
+            }
+
+            return j_playlist;
+
+        },
+        buildMusicPlayer: function (playlist) {
+            var css = {
+                jPlayer: "#jquery_jplayer_1",
+                cssSelectorAncestor: "#jp_container_1"
+            };
+
+            var options = {
+                playlistOptions: {
+                    enableRemoveControls: false
+                },
+                supplied: "mp3, oga",
+                smoothPlayBar: true,
+                keyEnabled: true,
+                audioFullScreen: true,
+                ready: function() {
+                    addBuyButtons( getFromLocalStorage('playlist') );
+                }
+            };
+            new jPlayerPlaylist(css, playlist, options);
+        },
+        testSavePlaylistToLocalStorage: function(playlist_obj) {
+            localStorage.setItem('music_player_tpa_playlist', JSON.stringify(playlist_obj));
+        },
+        testSaveSettingsToLocalStorage: function(settings_obj) {
+            localStorage.setItem('music_player_tpa_settings', JSON.stringify(settings_obj));
+        }
+
+    };
+
+    function addBuyButtons(playlist) {
+        console.log("playlist: ", playlist);
+        var song_price = '';
+        $('.jp-playlist ul li div').each( function(i) {
+            song_price = playlist[i].song_price;
+            $(this).append('<button class="song btn btn-primary btn-xs pull-right" data-index="' + i + '">' + song_price + '</button>');
+        });
+        $('.jp-playlist').find('button.song').on('click', function() {
+            var sale_list = getFromLocalStorage('playlist');
+            var sale_settings = getFromLocalStorage('settings');
+            var this_song = sale_list[ $(this).data('index') ];
+            sellSong(this_song, sale_settings);
+        });
+
+    }
+
+
+    function sellSong(song, sale_settings) {
+        var data = populateData(song, sale_settings);
+        var fingerprint = generateFingerprint(data);
+
+        var html = '<form id="purchase" action="http://safer-checkout.krembo.wixpress.com/tpa/checkout" method="POST">';
+        for ( var key in data ) {
+            html += '<input type="hidden" name="' + key + '" ';
+            html += 'value="' + data[key] + '"';
+            html += '>';
+        }
+        html += '<input type="submit" value="Buy" style="visibility: hidden;">';
+        html += '</form>';
+        html += '<script>';
+        html += 'var MyIFrame = document.getElementById("send_payment");';
+        html += 'var MyIFrameDoc = (MyIFrame.contentWindow || MyIFrame.contentDocument);';
+        html += 'if (MyIFrameDoc.document) MyIFrameDoc = MyIFrameDoc.document;';
+        html += 'MyIFrameDoc.getElementById("purchase").submit();';
+        html += '<\/script>';
+
+        console.log("HTML: ", html);
+
+        openModal(html);
+    }
+
+    function openModal(html) {
+        console.log("aaa: ", html);
+
+        var onClose = function(message) { console.log("Modal closed with message: ", message); }
+
+        Wix.openModal("http://sslstatic.wix.com/services/js-sdk/1.16.0/html/modal.html", 400, 400, onClose);
+
+        var payment_modal = $('#payment');
+
+        payment_modal.find('div.modal-body').append('<iframe id="send_payment" frameborder="0"></iframe>');
+        var content = $('#send_payment').contents();
+
+        payment_modal.modal();
+        content.find("body").append(html);
+    }
+
+
+//    function openModal(html) {
+//        console.log("aaa: ", html);
+//
+//        var payment_modal = $('#payment');
+//
+//        payment_modal.find('div.modal-body').append('<iframe id="send_payment" frameborder="0"></iframe>');
+//        var content = $('#send_payment').contents();
+//
+//        payment_modal.modal();
+//        content.find("body").append(html);
+//    }
+
+
+    $('#fill_details').on('click', function(e) {
+        e.preventDefault();
+        $('#api_username').val('checkoutseller_api1.gmail.com');
+        $('#api_password').val('1384155179');
+        $('#api_signature').val('Ar0VprKYexghecUS4CZYMCkYFJOYA9eUWoblNZa2nockSEsdBloQMzT8');
+
+        $('#song_name').val('Like a Bird');
+        $('#song_price').val('1.99');
+        $('#song_file').val('Ar0VprKYexghecUS4CZYMCk');
+    });
+
+    function generateFingerprint(crypt_obj) {
+//        total^currency^referenceId^timestamp^username
+
+        APPLICATION_SECRET_KEY = "0c69a041-f119-4c0b-a8d7-205e96d4a9d2";
+
+        var crypt_string = crypt_obj.transactionTotal + '^';
+        crypt_string += crypt_obj.transactionCurrency + '^';
+        crypt_string += crypt_obj.transactionReferenceId + '^';
+        crypt_string += crypt_obj.transactionTimestamp + '^';
+        crypt_string += crypt_obj.paymentGatewayUsername;
+
+        var fingerprint = CryptoJS.HmacSHA1(crypt_string, APPLICATION_SECRET_KEY);
+        var hex = CryptoJS.enc.Hex.stringify(fingerprint);
+        console.log("crypt_obj: ", crypt_obj );
+        console.log("crypt: ", fingerprint );
+        console.log("hex: ", hex );
+        return hex;
+    }
+
+
+    function populateData(song, sale_settings) {
+        var data = {
+            metasiteId: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+            appDefinitionId: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+            itemQuantity_1: 1,
+            paymentGatewayType: 'paypal_express'
+        };
+
+        data.itemTitle_1 = song.song_name;
+        data.itemPrice_1 = song.song_price;
+        data.itemFileId_1 = song.song_file;
+        data.transactionTotal = song.song_price;
+        data.transactionCurrency = sale_settings.store_currency;
+        data.itemSku_1 = 'dffeefefef';
+        data.itemDescription_1 = 'sdfsdf dffeefefef';
+        data.transactionReferenceId = Math.round( Math.random() * 10000000000 );
+        var utc_time = new Date();
+        data.transactionTimestamp = (utc_time.getTime() + (utc_time.getTimezoneOffset() * 60));
+        data.paymentGatewayUsername = sale_settings.api_username;
+        data.paymentGatewayPassword = sale_settings.api_password;
+        data.paymentGatewaySignature = sale_settings.api_signature;
+
+        return data;
+    }
+
+
+
+
+    var test_playlist_array = [
+        {
+            song_name: 'Track 8',
+            song_price: '1.99',
+            song_file: 'http://media.wix.com/mp3/f1130f_45fb29c8d4424858b96f7aa60490d0b0.mp3'
+        },
+        {
+            song_name: 'Tuolumne',
+            song_price: '0.99',
+            song_file: 'http://media.wix.com/mp3/f1130f_a6046d6d6f134ecabe3b7a1b00c59ed5.mp3'
+        },
+        {
+            song_name: 'Grux',
+            song_price: '2.99',
+            song_file: 'http://media.wix.com/mp3/f1130f_3759a830633043e182fa625f8c584a6e.mp3'
+        },
+        {
+            song_name: 'Air 1',
+            song_price: '12.99',
+            song_file: 'http://media.wix.com/mp3/f1130f_ce0de52597e84a7e904f3685d78729fb.mp3'
+        }
+    ];
+
 
 
     //            $('#instanceId').html(Wix.Utils.getInstanceId());

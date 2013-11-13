@@ -115,7 +115,7 @@
         <div class="col-lg-12">
             <div class="well">
                 <button id="fill_details" class="btn btn-link">Fill-In Details</button>
-                <button id="buy_now" class="btn btn-default pull-right">Buy Now!</button>
+                <button id="update_button" class="btn btn-default pull-right">UPDATE</button>
             </div>
         </div>
     </div>
@@ -141,103 +141,21 @@
         });
     });
 
-
-
-    $('#buy_now').on('click', function(e) {
+    $('#update_button'.on('click', function() {
         e.preventDefault();
 
-        var data = populateData();
-        var fingerprint = generateFingerprint(data);
-
-        var html = '<form id="purchase" action="http://postlog.eu01.aws.af.cm/music" method="POST">';
-        for ( var key in data ) {
-            html += '<input type="hidden" name="' + key + '" ';
-            html += 'value="' + data[key] + '"';
-            html += '>';
-        }
-        html += '<input type="submit" value="Buy" style="visibility: hidden;">';
-        html += '</form>';
-        html += '<script>';
-        html += 'var MyIFrame = document.getElementById("send_payment");';
-        html += 'var MyIFrameDoc = (MyIFrame.contentWindow || MyIFrame.contentDocument);';
-        html += 'if (MyIFrameDoc.document) MyIFrameDoc = MyIFrameDoc.document;';
-        html += 'MyIFrameDoc.getElementById("purchase").submit();';
-        html += '<\/script>';
-
-        console.log("HTML: ", html);
-
-        openModal(html);
-
-    });
-
-    function openModal(html) {
-        console.log("aaa: ", html);
-
-        var payment_modal = $('#payment');
-
-        payment_modal.find('div.modal-body').append('<iframe id="send_payment" frameborder="0"></iframe>');
-        var content = $('#send_payment').contents();
-
-        payment_modal.modal();
-        content.find("body").append(html);
-    }
-
-
-    $('#fill_details').on('click', function(e) {
-        e.preventDefault();
-        $('#api_username').val('checkoutseller_api1.gmail.com');
-        $('#api_password').val('1384155179');
-        $('#api_signature').val('Ar0VprKYexghecUS4CZYMCkYFJOYA9eUWoblNZa2nockSEsdBloQMzT8');
-
-        $('#song_name').val('Like a Bird');
-        $('#song_price').val('1.99');
-        $('#song_file').val('Ar0VprKYexghecUS4CZYMCk');
-    });
-
-    function generateFingerprint(crypt_obj) {
-//        total^currency^referenceId^timestamp^username
-
-        APPLICATION_SECRET_KEY = "0c69a041-f119-4c0b-a8d7-205e96d4a9d2";
-
-        var crypt_string = crypt_obj.transactionTotal + '^';
-        crypt_string += crypt_obj.transactionCurrency + '^';
-        crypt_string += crypt_obj.transactionReferenceId + '^';
-        crypt_string += crypt_obj.transactionTimestamp + '^';
-        crypt_string += crypt_obj.paymentGatewayUsername;
-
-        var fingerprint = CryptoJS.HmacSHA1(crypt_string, APPLICATION_SECRET_KEY);
-        var hex = CryptoJS.enc.Hex.stringify(fingerprint);
-        console.log("crypt_obj: ", crypt_obj );
-        console.log("crypt: ", fingerprint );
-        console.log("hex: ", hex );
-        return hex;
-    }
-
-    function populateData() {
-        var data = {
-            metasiteId: 'aaaaa',
-            instanceId: 'aaaa',
-            appDefinitionId: 'dddd',
-            itemQuantity_1: 1,
-            paymentGatewayType: 'paypal_express'
+        var obj = {
+            api_username: $('#api_username').val(),
+            api_password: $('#api_password').val(),
+            api_signature: $('#api_signature').val(),
+            store_currency: $('#store_currency').vall()
         };
 
-        data.itemTitle_1 = $('#song_name').val();
-        data.itemPrice_1 = $('#song_price').val();
-        data.itemFileId_1 = $('#song_file').val();
-        data.transactionTotal = $('#song_price').val();
-        data.transactionCurrency = $('#store_currency').val();
-        data.itemSku_1 = 'dffeefefef';
-        data.itemDescription_1 = 'sdfsdf dffeefefef';
-        data.transactionReferenceId = Math.round( Math.random() * 10000000000 );
-        var utc_time = new Date();
-        data.transactionTimestamp = Math.round( (utc_time.getTime() + (utc_time.getTimezoneOffset() * 60)) / 1000.0 );
-        data.paymentGatewayUsername = $('#api_username').val();
-        data.paymentGatewayPassword = $('#api_password').val();
-        data.paymentGatewaySignature = $('#api_signature').val();
+        JSON.parse( localStorage.setItem('music_player_tpa_settings', obj) );
 
-        return data;
-    }
+    });
+
+
 
     //            $('#instanceId').html(Wix.Utils.getInstanceId());
     //            $('#uid').html(Wix.Utils.getUid());
