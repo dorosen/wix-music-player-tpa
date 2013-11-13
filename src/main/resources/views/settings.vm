@@ -173,13 +173,13 @@
     function openModal(html) {
         console.log("aaa: ", html);
 
-        var $payment = $('#payment');
+        var payment_modal = $('#payment');
 
-            $payment.find('div.modal-body').append('<iframe id="send_payment" frameborder="0"></iframe>');
-        var $content = $('#send_payment').contents();
+        payment_modal.find('div.modal-body').append('<iframe id="send_payment" frameborder="0"></iframe>');
+        var content = $('#send_payment').contents();
 
-            $payment.modal();
-            $content.find("body").append(html);
+        payment_modal.modal();
+        content.find("body").append(html);
     }
 
 
@@ -251,9 +251,9 @@
 
 <script>
     var settings = ${settings};
-//    $(document).ready(function() {
-//        init();
-//    });
+
+    $(document).ready(function() {
+    });
 
 
 
