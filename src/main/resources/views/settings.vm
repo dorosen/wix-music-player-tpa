@@ -42,8 +42,7 @@
 <body>
     <div class="container-fluid" id="container" class="container">
         <div class="row-fluid">
-            <div class="hero-unit" id="title">
-            </div>
+            <div class="hero-unit" id="title"><button class="btn btn-sm btn-default" id="settings_button">Settings</button></div>
         </div>
 
         <div class="row row_box" id="no_songs">
@@ -120,7 +119,8 @@
                                     <input type="text" class="form-control input-sm" id="song_file" placeholder="">
                                 </div>
                                 <div class="col-sm-6">
-                                    <button class="btn" id="add_song">Select Song</button>
+                                    <button class="btn btn-warning btn-sm" id="add_song">Upload/Select Song</button>
+                                    <button id="update_button" class="btn btn-default btn-sm pull-right">UPDATE</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -191,6 +191,7 @@
     });
 
     function init() {
+
 
         var states = {
             no_songs: function() {
@@ -275,11 +276,12 @@
 
     }
 
-    function showBoxes(array) {
+    function showBoxes(array, type) {
         var box = '';
         var boxes = ['payment_settings', 'add_song_dialog', 'list_songs', 'no_songs'];
         var is_requested = '';
         var is_visible = '';
+        var visible_array = [];
 
         for ( var i = 0; i < boxes.length; i++ ) {
             box = $('#' + boxes[i]);
@@ -288,13 +290,25 @@
 
 //            console.log("Box: ", box.attr('id'), " is visible: ", is_visible, " and requested: ", is_requested);
 
-            if( is_visible && !is_requested ) {
-                box.hide();
+            if( type === 'is_visible') {
+                if( is_visible && is_requested ) {
+                    visible_array.push(box);
+                }
             }
-            else if( !is_visible && is_requested ) {
-                box.show();
+            else {
+                if( is_visible && !is_requested ) {
+                    box.hide();
+                }
+                else if( !is_visible && is_requested ) {
+                    box.show();
+                }
             }
+
         }
+        if( type === 'is_visible') {
+            return visible_array;
+        }
+
     }
 
 
@@ -314,6 +328,12 @@
             $('#song_file').val(data.relativeUri);
             console.log("File Uri: ", data.relativeUri);
         });
+    });
+
+    $('#settings_button').on('click', function(e) {
+        e.preventDefault();
+
+        showBoxes(['list_songs', 'add_song_dialog']);
     });
 
     $('#update_button').on('click', function(e) {
