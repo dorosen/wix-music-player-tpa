@@ -42,7 +42,7 @@ var player = {
             keyEnabled: true,
             audioFullScreen: true,
             ready: function() {
-                on_ready();
+                eval(on_ready);
             }
         };
         new jPlayerPlaylist(css, playlist, options);
