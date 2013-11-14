@@ -103,8 +103,6 @@
             });
         }
 
-        setPlayerHeight();
-
         player.init();
 
     });
@@ -114,13 +112,6 @@
     }
 
 
-    function setPlayerHeight() {
-        var playlist_length = getFromLocalStorage('playlist').length;
-        var playlist_height = 80 + 33 * playlist_length - 1;
-
-        Wix.setHeight(playlist_height);
-
-    }
 
     function addBuyButtons(playlist) {
         console.log("playlist: ", playlist);

@@ -3,6 +3,7 @@ var player = {
     init: function(display_type) {
         var playlist_array = getFromLocalStorage('playlist');
         var jplayer_playlist = player.generatePlaylistForjPlayer(playlist_array);
+        player.setPlayerHeight();
         player.buildMusicPlayer(jplayer_playlist, display_type);
     },
     generatePlaylistForjPlayer: function(playlist) {
@@ -25,6 +26,13 @@ var player = {
         }
 
         return j_playlist;
+
+    },
+    setPlayerHeight: function() {
+        var playlist_length = getFromLocalStorage('playlist').length;
+        var playlist_height = 80 + 33 * playlist_length - 1;
+
+        Wix.setHeight(playlist_height);
 
     },
     buildMusicPlayer: function (playlist, display_type) {
