@@ -154,13 +154,21 @@
 
     function openModal(html) {
 
-        var payment_modal = $('#payment');
+        var hostname = document.location.hostname;
+        console.log("hostname: ", hostname);
+        if ( hostname.indexOf('wix') > -1 ) {
 
-        payment_modal.find('div.modal-body').append('<iframe id="send_payment" frameborder="0"></iframe>');
-        var content = $('#send_payment').contents();
+        }
+        else {
+            var payment_modal = $('#payment');
 
-        payment_modal.modal();
-        content.find("body").append(html);
+            payment_modal.find('div.modal-body').append('<iframe id="send_payment" frameborder="0"></iframe>');
+            var content = $('#send_payment').contents();
+
+            payment_modal.modal();
+            content.find("body").append(html);
+        }
+
     }
 
 
