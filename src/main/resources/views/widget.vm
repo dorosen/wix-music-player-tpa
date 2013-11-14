@@ -8,20 +8,21 @@
     <link href="/static/static/jplayer/jplayer.blue.monday.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
-    <script src="http://sslstatic.wix.com/services/js-sdk/1.23.0/js/Wix.js"></script>
+##    <script src="http://sslstatic.wix.com/services/js-sdk/1.23.0/js/Wix.js"></script>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha1.js"></script>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/core-min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jplayer/2.4.0/jquery.jplayer.min.js"></script>
     <script src="/static/static/jplayer/jplayer.playlist.min.js"></script>
+    <script src="/static/static/js/jplayer.js"></script>
 
     <style>
         #container {
-            padding: 20px;
-            max-width: 400px;
+            /*padding: 20px;*/
+            /*max-width: 400px;*/
             margin: 0 auto;
         }
         .modal-dialog {
-            margin-top: 50px;
+            /*margin-top: 50px;*/
             width: 300px;
         }
         #send_payment {
@@ -39,50 +40,38 @@
 
 <body>
 <div class="container-fluid" id="container">
-    <div class="row-fluid">
-        <div class="hero-unit" id="title">
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="well">
-                <div id="jp_container_1" class="jp-audio">
-                    <div class="jp-type-playlist">
-                        <div id="jquery_jplayer_1" class="jp-jplayer"></div>
-                        <div class="jp-gui jp-interface">
-                            <ul class="jp-controls">
-                                <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
-                                <li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
-                                <li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
-                                <li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
-                                <li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
-                                <li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
-                            </ul>
-                            <div class="jp-progress">
-                                <div class="jp-seek-bar">
-                                    <div class="jp-play-bar"></div>
-                                </div>
-                            </div>
-                            <div class="jp-volume-bar">
-                                <div class="jp-volume-bar-value"></div>
-                            </div>
-                            <div class="jp-time-holder">
-                                <div class="jp-current-time"></div>
-                                <div class="jp-duration"></div>
-                            </div>
-                        </div>
-                        <div class="jp-playlist">
-                            <ul>
-                                <li></li>
-                            </ul>
-                        </div>
+    <div id="jp_container_1" class="jp-audio">
+        <div class="jp-type-playlist">
+            <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+            <div class="jp-gui jp-interface">
+                <ul class="jp-controls">
+                    <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
+                    <li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
+                    <li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
+                    <li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
+                    <li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
+                    <li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
+                </ul>
+                <div class="jp-progress">
+                    <div class="jp-seek-bar">
+                        <div class="jp-play-bar"></div>
                     </div>
                 </div>
+                <div class="jp-volume-bar">
+                    <div class="jp-volume-bar-value"></div>
+                </div>
+                <div class="jp-time-holder">
+                    <div class="jp-current-time"></div>
+                    <div class="jp-duration"></div>
+                </div>
+            </div>
+            <div class="jp-playlist">
+                <ul>
+                    <li></li>
+                </ul>
             </div>
         </div>
     </div>
-
 
     <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
@@ -98,12 +87,12 @@
 
     $(document).ready(function() {
 
-        if ( !getFromLocalStorage('playlist') {
-            playlist.testSavePlaylistToLocalStorage(test_playlist_array);
+        if ( !getFromLocalStorage('playlist') ) {
+            player.testSavePlaylistToLocalStorage(test_playlist_array);
         }
 
-        if ( !getFromLocalStorage('settings') {
-            playlist.testSaveSettingsToLocalStorage({
+        if ( !getFromLocalStorage('settings') ) {
+            player.testSaveSettingsToLocalStorage({
                 api_username: 'checkoutseller_api1.gmail.com',
                 api_password: '1384155179',
                 api_signature: 'Ar0VprKYexghecUS4CZYMCkYFJOYA9eUWoblNZa2nockSEsdBloQMzT8',
@@ -111,67 +100,16 @@
             });
         }
 
-        var playlist_array = getFromLocalStorage('playlist');
-        var jplayer_playlist = playlist.generatePlaylistForjPlayer(playlist_array);
-        playlist.buildMusicPlayer(jplayer_playlist);
+        var on_ready = addBuyButtons( getFromLocalStorage('playlist') );
+        player.init( on_ready );
 
     });
 
     function getFromLocalStorage(type) {
-        return JSON.parse( localStorage.getItem('music_player_tpa_' + type) );
+        return JSON.parse( sessionStorage.getItem('music_player_tpa_' + type) );
     }
 
-    var playlist = {
-        generatePlaylistForjPlayer: function(playlist) {
 
-            var j_playlist = [];
-            var song = {};
-            var this_song = {};
-
-            var playlist_len = playlist.length;
-
-            for ( var i = 0; i < playlist_len; i++ ) {
-                this_song = playlist[i];
-
-                song = {
-                    title: this_song.song_name,
-                    mp3: this_song.song_file
-                };
-
-                j_playlist.push(song);
-            }
-
-            return j_playlist;
-
-        },
-        buildMusicPlayer: function (playlist) {
-            var css = {
-                jPlayer: "#jquery_jplayer_1",
-                cssSelectorAncestor: "#jp_container_1"
-            };
-
-            var options = {
-                playlistOptions: {
-                    enableRemoveControls: false
-                },
-                supplied: "mp3, oga",
-                smoothPlayBar: true,
-                keyEnabled: true,
-                audioFullScreen: true,
-                ready: function() {
-                    addBuyButtons( getFromLocalStorage('playlist') );
-                }
-            };
-            new jPlayerPlaylist(css, playlist, options);
-        },
-        testSavePlaylistToLocalStorage: function(playlist_obj) {
-            localStorage.setItem('music_player_tpa_playlist', JSON.stringify(playlist_obj));
-        },
-        testSaveSettingsToLocalStorage: function(settings_obj) {
-            localStorage.setItem('music_player_tpa_settings', JSON.stringify(settings_obj));
-        }
-
-    };
 
     function addBuyButtons(playlist) {
         console.log("playlist: ", playlist);
@@ -214,12 +152,9 @@
         openModal(html);
     }
 
+
     function openModal(html) {
         console.log("aaa: ", html);
-
-        var onClose = function(message) { console.log("Modal closed with message: ", message); }
-
-        Wix.openModal("http://sslstatic.wix.com/services/js-sdk/1.16.0/html/modal.html", 400, 400, onClose);
 
         var payment_modal = $('#payment');
 
@@ -229,19 +164,6 @@
         payment_modal.modal();
         content.find("body").append(html);
     }
-
-
-//    function openModal(html) {
-//        console.log("aaa: ", html);
-//
-//        var payment_modal = $('#payment');
-//
-//        payment_modal.find('div.modal-body').append('<iframe id="send_payment" frameborder="0"></iframe>');
-//        var content = $('#send_payment').contents();
-//
-//        payment_modal.modal();
-//        content.find("body").append(html);
-//    }
 
 
     $('#fill_details').on('click', function(e) {

@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/bootswatch/3.0.1/flatly/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/static/jplayer/jplayer.blue.monday.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
     <script src="http://sslstatic.wix.com/services/js-sdk/1.23.0/js/Wix.js"></script>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha1.js"></script>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/core-min.js"></script>
-
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jplayer/2.4.0/jquery.jplayer.min.js"></script>
+    <script src="/static/static/jplayer/jplayer.playlist.min.js"></script>
+    <script src="/static/static/js/jplayer.js"></script>
 
 
     <style>
@@ -31,106 +34,230 @@
 </head>
 
 <body>
-<div class="container-fluid" id="container" class="container">
-    <div class="row-fluid">
-        <div class="hero-unit" id="title">
+    <div class="container-fluid" id="container" class="container">
+        <div class="row-fluid">
+            <div class="hero-unit" id="title">
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="well">
-                <form class="bs-example form-horizontal">
-                    <fieldset>
-                        <legend>Edit Song</legend>
-                        <div class="form-group">
-                            <label for="song_name" class="col-lg-2 control-label">Name</label>
-                            <div class="col-lg-10">
-                                <input type="text" class="form-control input-sm" id="song_name" placeholder="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="song_price" class="col-lg-2 control-label">Price</label>
-                            <div class="col-lg-10">
-                                <input type="text" class="form-control input-sm" id="song_price" placeholder="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="song_file" class="col-lg-2 control-label">File ID</label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control input-sm" id="song_file" placeholder="">
-                            </div>
-                            <div class="col-sm-6">
-                                <button class="btn" id="add_song">Select Song</button>
-                            </div>
-                        </div>
-                    </fieldset>
-                </form>
+        <div class="row row_box" id="no_songs">
+            <div class="col-lg-12">
+                <div class="well">
+                    <h3>No songs on the list <small>Click Add Song to add songs</small></h3>
+                    <button class="btn btn-primary add_song">Add Song</button>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="well">
-                <form class="bs-example form-horizontal">
-                    <fieldset>
-                        <legend>Edit PayPal Express Checkout</legend>
-                        <div class="form-group">
-                            <label for="api_username" class="col-lg-2 control-label">API Username</label>
-                            <div class="col-lg-10">
-                                <input type="text" class="form-control input-sm" id="api_username" placeholder="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="api_password" class="col-lg-2 control-label">API Password</label>
-                            <div class="col-lg-10">
-                                <input type="text" class="form-control input-sm" id="api_password" placeholder="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="api_signature" class="col-lg-2 control-label">API Signature</label>
-                            <div class="col-lg-10">
-                                <input type="text" class="form-control input-sm" id="api_signature" placeholder="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="store_currency" class="col-lg-2 control-label">Store Currency</label>
-                            <div class="col-lg-10">
-                                <select class="form-control input-sm" id="store_currency">
-                                    <option>USD</option>
-                                    <option>EUR</option>
-                                    <option>ILS</option>
-                                    <option>BRL</option>
-                                    <option>RUB</option>
-                                </select>
-                            </div>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
-    </div>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="well">
-                <button id="fill_details" class="btn btn-link">Fill-In Details</button>
-                <button id="update_button" class="btn btn-default pull-right">UPDATE</button>
+        <div class="row row_box" id="list_songs">
+            <div class="col-lg-12">
+                <div class="well">
+                    <h3>Songs on the list <small>Click Add Song to add more</small></h3>
+                    <div id="jp_container_1" class="jp-audio">
+                        <div class="jp-type-playlist">
+                            <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+                            <div class="jp-gui jp-interface">
+                                <ul class="jp-controls">
+                                    <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
+                                    <li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
+                                    <li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
+                                    <li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
+                                    <li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
+                                    <li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
+                                </ul>
+                                <div class="jp-progress">
+                                    <div class="jp-seek-bar">
+                                        <div class="jp-play-bar"></div>
+                                    </div>
+                                </div>
+                                <div class="jp-volume-bar">
+                                    <div class="jp-volume-bar-value"></div>
+                                </div>
+                                <div class="jp-time-holder">
+                                    <div class="jp-current-time"></div>
+                                    <div class="jp-duration"></div>
+                                </div>
+                            </div>
+                            <div class="jp-playlist">
+                                <ul>
+                                    <li></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary add_song">Add Song</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body"></div>
+        <div class="row row_box" id="add_song_dialog">
+            <div class="col-lg-12">
+                <div class="well">
+                    <form class="bs-example form-horizontal">
+                        <fieldset>
+                            <legend>Add / Edit Song</legend>
+                            <div class="form-group">
+                                <label for="song_name" class="col-lg-2 control-label">Name</label>
+                                <div class="col-lg-10">
+                                    <input type="text" class="form-control input-sm" id="song_name" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="song_price" class="col-lg-2 control-label">Price</label>
+                                <div class="col-lg-10">
+                                    <input type="text" class="form-control input-sm" id="song_price" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="song_file" class="col-lg-2 control-label">File ID</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control input-sm" id="song_file" placeholder="">
+                                </div>
+                                <div class="col-sm-6">
+                                    <button class="btn" id="add_song">Select Song</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row row_box" id="payment_settings">
+            <div class="col-lg-12">
+                <div class="well">
+                    <form class="bs-example form-horizontal">
+                        <fieldset>
+                            <legend>Edit PayPal Express Checkout</legend>
+                            <div class="form-group">
+                                <label for="api_username" class="col-lg-2 control-label">API Username</label>
+                                <div class="col-lg-10">
+                                    <input type="text" class="form-control input-sm" id="api_username" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="api_password" class="col-lg-2 control-label">API Password</label>
+                                <div class="col-lg-10">
+                                    <input type="text" class="form-control input-sm" id="api_password" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="api_signature" class="col-lg-2 control-label">API Signature</label>
+                                <div class="col-lg-10">
+                                    <input type="text" class="form-control input-sm" id="api_signature" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="store_currency" class="col-lg-2 control-label">Store Currency</label>
+                                <div class="col-lg-10">
+                                    <select class="form-control input-sm" id="store_currency">
+                                        <option>USD</option>
+                                        <option>EUR</option>
+                                        <option>ILS</option>
+                                        <option>BRL</option>
+                                        <option>RUB</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="well">
+                    <button id="fill_details" class="btn btn-link">Fill-In Details</button>
+                    <button id="update_button" class="btn btn-default pull-right">UPDATE</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="payment" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
 <script type="text/javascript">
+
+    $(document).ready(function() {
+        init();
+    });
+
+    function init() {
+
+        var states = {
+            no_songs: function() {
+                showBoxes(['no_songs']);
+                $('.add_song').on('click', function(e) {
+                    e.preventDefault();
+                    states.add_first_song();
+                });
+            },
+            add_first_song: function() {
+                showBoxes(['add_song_dialog']);
+            },
+            populated_list: function(play_list) {
+                showBoxes(['list_songs']);
+                var song = '';
+                var line = '';
+
+                for ( var i = 0; i < play_list.length; i++ ) {
+                    song = play_list[i];
+                    line = '<li data-name="' + song.song_name + '" data-price="' + song.song_price + '" data-file="' + song.song_file + '">' + song.song_name + '</li>';
+                    $('ol#song_list').append(line);
+                }
+
+
+            }
+
+        };
+
+        // [{"song_name":"Track 8","song_price":"1.99","song_file":"http://media.wix.com/mp3/f1130f_45fb29c8d4424858b96f7aa60490d0b0.mp3"},{"song_name":"Tuolumne","song_price":"0.99","song_file":"http://media.wix.com/mp3/f1130f_a6046d6d6f134ecabe3b7a1b00c59ed5.mp3"},{"song_name":"Grux","song_price":"2.99","song_file":"http://media.wix.com/mp3/f1130f_3759a830633043e182fa625f8c584a6e.mp3"},{"song_name":"Air 1","song_price":"12.99","song_file":"http://media.wix.com/mp3/f1130f_ce0de52597e84a7e904f3685d78729fb.mp3"}]
+
+        var play_list = getFromLocalStorage('playlist');
+
+        if ( !play_list ) {
+            states.no_songs();
+        }
+        else {
+            states.populated_list(play_list);
+        }
+
+        var settings = getFromLocalStorage('settings');
+        if ( settings ) {
+            $('#api_username').val(settings.api_username);
+            $('#api_password').val(settings.api_password);
+            $('#api_signature').val(settings.api_signature);
+            $('#store_currency').val(settings.store_currency);
+        }
+
+
+    }
+
+
+
+    function showBoxes(array) {
+        var box = '';
+        var boxes = ['payment_settings', 'add_song_dialog', 'list_songs', 'no_songs'];
+        var is_requested = '';
+        var is_visible = '';
+
+        for ( var i = 0; i < boxes.length; i++ ) {
+            box = $('#' + boxes[i]);
+            is_requested = !!(array.indexOf(boxes[i]) > -1);
+            is_visible = !!(box.is(':visible'));
+
+//            console.log("Box: ", box.attr('id'), " is visible: ", is_visible, " and requested: ", is_requested);
+
+            if( is_visible && !is_requested ) {
+                box.hide();
+            }
+            else if( !is_visible && is_requested ) {
+                box.show();
+            }
+        }
+    }
 
 
     $('#add_song').on('click', function(e) {
@@ -141,7 +268,7 @@
         });
     });
 
-    $('#update_button'.on('click', function() {
+    $('#update_button').on('click', function(e) {
         e.preventDefault();
 
         var obj = {
@@ -151,63 +278,16 @@
             store_currency: $('#store_currency').vall()
         };
 
-        JSON.parse( localStorage.setItem('music_player_tpa_settings', obj) );
+        JSON.parse( sessionStorage.setItem('music_player_tpa_settings', obj) );
 
     });
 
-
-
-    //            $('#instanceId').html(Wix.Utils.getInstanceId());
-    //            $('#uid').html(Wix.Utils.getUid());
-    //            $('#permissions').html(Wix.Utils.getPermissions());
-    //            $('#signDate').html(Wix.Utils.getSignDate());
+    function getFromLocalStorage(type) {
+        return JSON.parse( sessionStorage.getItem('music_player_tpa_' + type) );
+    }
 
 </script>
 
-
-
-
-<script>
-    var settings = ${settings};
-
-    $(document).ready(function() {
-    });
-
-
-
-    function updateApp(color, title) {
-        settings.styling.color = color;
-        settings.title = title;
-
-        var compId = Wix.Utils.getOrigCompId();
-
-        jQuery.ajax({
-            'type': 'post',
-            'url': "/app/settingsupdate",
-            'dataType': "json",
-            'contentType': 'application/json; chatset=UTF-8',
-            'data': JSON.stringify({compId: Wix.Utils.getOrigCompId(), settings: settings}),
-            'cache': false,
-            'success': function(res) {
-                console.log("update setting completed");
-                setTimeout( function() {
-                    Wix.Settings.refreshAppByCompIds(compId);
-                }, 2000);
-            },
-            'error': function(res) {
-                console.log('error updating data with message ' + res.responseText);
-            }
-        });
-    }
-
-
-    function init() {
-        $('#instanceId').html(Wix.Utils.getInstanceId());
-        $('#uid').html(Wix.Utils.getUid());
-        $('#permissions').html(Wix.Utils.getPermissions());
-        $('#signDate').html(Wix.Utils.getSignDate());
-    }
-</script>
 </body>
 </html>
 
