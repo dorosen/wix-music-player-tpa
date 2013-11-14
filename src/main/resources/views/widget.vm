@@ -134,41 +134,7 @@
         var data = populateData(song, sale_settings);
         var fingerprint = generateFingerprint(data);
 
-
-        var hostname = document.location.hostname;
-        console.log("hostname: ", hostname);
-        if ( hostname.indexOf('wix') > -1 ) {
-
-            var obj = {
-               "paymentGateway": {
-                   "type":"paypal_express",
-                   "username": data.paymentGatewayUsername,
-                   "password": data.paymentGatewayPassword,
-                   "signature": data.paymentGatewaySignature
-               },
-               "items":[
-                   {
-                       "quantity": 1,
-                       "title": data.itemTitle_1,
-                       "price": data.itemPrice_1,
-                       "fileId": data.itemFileId_1,
-                       "sku": data.itemSku_1,
-                       "description": data.itemDescription_1
-                   }
-               ],
-               "transaction":{
-                   "total": data.transactionTotal,
-                   "currency": data.transactionCurrency,
-                   "referenceId": data.transactionReferenceId
-               }
-            };
-
-            Wix.startCheckout(obj, fingerprint, function(msg) {
-                console.log("Final Result: ", msg);
-            });
-
-        }
-        else {
+        if ( document.location.hostname === 'localhost' ) {
 
             var html = '<form id="purchase" action="http://safer-checkout.krembo.wixpress.com/tpa/checkout" method="POST">';
             for ( var key in data ) {
@@ -188,6 +154,38 @@
             console.log("HTML: ", html);
 
             openModal(html);
+
+
+            Wix.startCheckout(obj, fingerprint, function(msg) {
+                console.log("Final Result: ", msg);
+            });
+
+        }
+        else {
+
+            var obj = {
+                "paymentGateway": {
+                    "type":"paypal_express",
+                    "username": data.paymentGatewayUsername,
+                    "password": data.paymentGatewayPassword,
+                    "signature": data.paymentGatewaySignature
+                },
+                "items":[
+                    {
+                        "quantity": 1,
+                        "title": data.itemTitle_1,
+                        "price": data.itemPrice_1,
+                        "fileId": data.itemFileId_1,
+                        "sku": data.itemSku_1,
+                        "description": data.itemDescription_1
+                    }
+                ],
+                "transaction":{
+                    "total": data.transactionTotal,
+                    "currency": data.transactionCurrency,
+                    "referenceId": data.transactionReferenceId
+                }
+            };
         }
     }
 
