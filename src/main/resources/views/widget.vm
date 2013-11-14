@@ -100,8 +100,7 @@
             });
         }
 
-        var on_ready = "addBuyButtons( getFromLocalStorage('playlist') )";
-        player.init( on_ready );
+        player.init();
 
     });
 
@@ -154,7 +153,6 @@
 
 
     function openModal(html) {
-        console.log("aaa: ", html);
 
         var payment_modal = $('#payment');
 

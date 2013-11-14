@@ -28,6 +28,12 @@
         .modal-dialog {
             margin-top: 50px;
         }
+        .song {
+            margin-left: 10px;
+        }
+        .add_song {
+            margin-top: 20px;
+        }
 
 
     </style>
@@ -85,7 +91,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary add_song">Add Song</button>
+                    <button class="btn btn-info btn-sm add_song">Add Song</button>
                 </div>
             </div>
         </div>
@@ -199,14 +205,16 @@
             },
             populated_list: function(play_list) {
                 showBoxes(['list_songs']);
-                var song = '';
-                var line = '';
 
-                for ( var i = 0; i < play_list.length; i++ ) {
-                    song = play_list[i];
-                    line = '<li data-name="' + song.song_name + '" data-price="' + song.song_price + '" data-file="' + song.song_file + '">' + song.song_name + '</li>';
-                    $('ol#song_list').append(line);
-                }
+                player.init('editor');
+//                var song = '';
+//                var line = '';
+//
+//                for ( var i = 0; i < play_list.length; i++ ) {
+//                    song = play_list[i];
+//                    line = '<li data-name="' + song.song_name + '" data-price="' + song.song_price + '" data-file="' + song.song_file + '">' + song.song_name + '</li>';
+//                    $('ol#song_list').append(line);
+//                }
 
 
             }
@@ -235,7 +243,37 @@
 
     }
 
+    function addEditButtons(playlist) {
+        console.log("playlist2: ", playlist);
+        var song_price = '';
+        $('.jp-playlist ul li div').each( function(i) {
+            song_price = playlist[i].song_price;
+            var content = '<button class="song btn btn-primary btn-xs pull-right" data-index="' + i + '">Edit</button>';
+            content += '<span class="pull-right">' + song_price + '</span>';
+            $(this).append(content);
+        });
+        $('.jp-playlist').find('button.song').on('click', function() {
 
+            $(this).text('Save');
+
+            var song_line = $(this).parent();
+            // Change song title to input
+            var song_title = song_line.find('a.jp-playlist-item').text();
+
+
+            // Change song price to input
+
+
+            // Add an upload song button
+
+
+            var song_list = getFromLocalStorage('playlist');
+            var this_song = sale_list[ $(this).data('index') ];
+            var sale_settings = getFromLocalStorage('settings');
+            sellSong(this_song, sale_settings);
+        });
+
+    }
 
     function showBoxes(array) {
         var box = '';
@@ -260,7 +298,17 @@
     }
 
 
-    $('#add_song').on('click', function(e) {
+    $('.add_song').on('click', function(e) {
+        console.log("add_song button clicked");
+        e.preventDefault();
+
+        showBoxes(['list_songs', 'add_song_dialog']);
+
+
+    });
+
+    $('.select_song_file').on('click', function(e) {
+        console.log("select_song_file button clicked");
         e.preventDefault();
         var imageUrl = Wix.Settings.openMediaDialog(Wix.Settings.MediaType.AUDIO, false, function(data) {
             $('#song_file').val(data.relativeUri);

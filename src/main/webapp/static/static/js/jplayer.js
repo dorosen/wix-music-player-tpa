@@ -1,9 +1,9 @@
 
 var player = {
-    init: function(on_ready) {
+    init: function(display_type) {
         var playlist_array = getFromLocalStorage('playlist');
         var jplayer_playlist = player.generatePlaylistForjPlayer(playlist_array);
-        player.buildMusicPlayer(jplayer_playlist, on_ready);
+        player.buildMusicPlayer(jplayer_playlist, display_type);
     },
     generatePlaylistForjPlayer: function(playlist) {
 
@@ -27,7 +27,7 @@ var player = {
         return j_playlist;
 
     },
-    buildMusicPlayer: function (playlist, on_ready) {
+    buildMusicPlayer: function (playlist, display_type) {
         var css = {
             jPlayer: "#jquery_jplayer_1",
             cssSelectorAncestor: "#jp_container_1"
@@ -42,7 +42,13 @@ var player = {
             keyEnabled: true,
             audioFullScreen: true,
             ready: function() {
-                eval(on_ready);
+                if( display_type === 'editor' ) {
+                    console.log("In Editor Mode");
+                    addEditButtons( getFromLocalStorage('playlist') );
+                }
+                else {
+                    addBuyButtons( getFromLocalStorage('playlist') );
+                }
             }
         };
         new jPlayerPlaylist(css, playlist, options);
