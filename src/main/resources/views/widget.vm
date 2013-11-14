@@ -155,11 +155,6 @@
 
             openModal(html);
 
-
-            Wix.startCheckout(obj, fingerprint, function(msg) {
-                console.log("Final Result: ", msg);
-            });
-
         }
         else {
 
@@ -186,6 +181,11 @@
                     "referenceId": data.transactionReferenceId
                 }
             };
+
+            Wix.startCheckout(obj, fingerprint, function(msg) {
+                console.log("Final Result: ", msg);
+            });
+
         }
     }
 
@@ -253,24 +253,24 @@
 
     var test_playlist_array = [
         {
-            song_name: 'Track 8',
+            song_name: 'Cool Track',
             song_price: '1.99',
-            song_file: 'http://media.wix.com/mp3/f1130f_45fb29c8d4424858b96f7aa60490d0b0.mp3'
+            song_file: 'f1130f_45fb29c8d4424858b96f7aa60490d0b0.mp3'
         },
         {
             song_name: 'Tuolumne',
             song_price: '0.99',
-            song_file: 'http://media.wix.com/mp3/f1130f_a6046d6d6f134ecabe3b7a1b00c59ed5.mp3'
+            song_file: 'f1130f_a6046d6d6f134ecabe3b7a1b00c59ed5.mp3'
         },
         {
             song_name: 'Grux',
             song_price: '2.99',
-            song_file: 'http://media.wix.com/mp3/f1130f_3759a830633043e182fa625f8c584a6e.mp3'
+            song_file: 'f1130f_3759a830633043e182fa625f8c584a6e.mp3'
         },
         {
             song_name: 'Air 1',
             song_price: '12.99',
-            song_file: 'http://media.wix.com/mp3/f1130f_ce0de52597e84a7e904f3685d78729fb.mp3'
+            song_file: 'f1130f_ce0de52597e84a7e904f3685d78729fb.mp3'
         }
     ];
 
