@@ -353,6 +353,18 @@
 
     });
 
+
+    $('#fill_details').on('click', function(e) {
+        e.preventDefault();
+        $('#api_username').val('checkoutseller_api1.gmail.com');
+        $('#api_password').val('1384155179');
+        $('#api_signature').val('Ar0VprKYexghecUS4CZYMCkYFJOYA9eUWoblNZa2nockSEsdBloQMzT8');
+
+        $('#song_name').val('Like a Bird');
+        $('#song_price').val('1.99');
+        $('#song_file').val('Ar0VprKYexghecUS4CZYMCk');
+    });
+
     function getFromLocalStorage(type) {
         return JSON.parse( sessionStorage.getItem('music_player_tpa_' + type) );
     }

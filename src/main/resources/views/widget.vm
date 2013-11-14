@@ -134,57 +134,76 @@
         var data = populateData(song, sale_settings);
         var fingerprint = generateFingerprint(data);
 
-        var html = '<form id="purchase" action="http://safer-checkout.krembo.wixpress.com/tpa/checkout" method="POST">';
-        for ( var key in data ) {
-            html += '<input type="hidden" name="' + key + '" ';
-            html += 'value="' + data[key] + '"';
-            html += '>';
-        }
-        html += '<input type="submit" value="Buy" style="visibility: hidden;">';
-        html += '</form>';
-        html += '<script>';
-        html += 'var MyIFrame = document.getElementById("send_payment");';
-        html += 'var MyIFrameDoc = (MyIFrame.contentWindow || MyIFrame.contentDocument);';
-        html += 'if (MyIFrameDoc.document) MyIFrameDoc = MyIFrameDoc.document;';
-        html += 'MyIFrameDoc.getElementById("purchase").submit();';
-        html += '<\/script>';
-
-        console.log("HTML: ", html);
-
-        openModal(html);
-    }
-
-
-    function openModal(html) {
 
         var hostname = document.location.hostname;
         console.log("hostname: ", hostname);
         if ( hostname.indexOf('wix') > -1 ) {
 
+            var obj = {
+               "paymentGateway": {
+                   "type":"paypal_express",
+                   "username": data.paymentGatewayUsername,
+                   "password": data.paymentGatewayPassword,
+                   "signature": data.paymentGatewaySignature
+               },
+               "items":[
+                   {
+                       "quantity": 1,
+                       "title": data.itemTitle_1,
+                       "price": data.itemPrice_1,
+                       "fileId": data.itemFileId_1,
+                       "sku": data.itemSku_1,
+                       "description": data.itemDescription_1
+                   }
+               ],
+               "transaction":{
+                   "total": data.transactionTotal,
+                   "currency": data.transactionCurrency,
+                   "referenceId": data.transactionReferenceId
+               }
+            };
+
+            Wix.startCheckout(obj, fingerprint, function(msg) {
+                console.log("Final Result: ", msg);
+            });
+
         }
         else {
-            var payment_modal = $('#payment');
 
-            payment_modal.find('div.modal-body').append('<iframe id="send_payment" frameborder="0"></iframe>');
-            var content = $('#send_payment').contents();
+            var html = '<form id="purchase" action="http://safer-checkout.krembo.wixpress.com/tpa/checkout" method="POST">';
+            for ( var key in data ) {
+                html += '<input type="hidden" name="' + key + '" ';
+                html += 'value="' + data[key] + '"';
+                html += '>';
+            }
+            html += '<input type="submit" value="Buy" style="visibility: hidden;">';
+            html += '</form>';
+            html += '<script>';
+            html += 'var MyIFrame = document.getElementById("send_payment");';
+            html += 'var MyIFrameDoc = (MyIFrame.contentWindow || MyIFrame.contentDocument);';
+            html += 'if (MyIFrameDoc.document) MyIFrameDoc = MyIFrameDoc.document;';
+            html += 'MyIFrameDoc.getElementById("purchase").submit();';
+            html += '<\/script>';
 
-            payment_modal.modal();
-            content.find("body").append(html);
+            console.log("HTML: ", html);
+
+            openModal(html);
         }
-
     }
 
 
-    $('#fill_details').on('click', function(e) {
-        e.preventDefault();
-        $('#api_username').val('checkoutseller_api1.gmail.com');
-        $('#api_password').val('1384155179');
-        $('#api_signature').val('Ar0VprKYexghecUS4CZYMCkYFJOYA9eUWoblNZa2nockSEsdBloQMzT8');
+    function openModal(html) {
 
-        $('#song_name').val('Like a Bird');
-        $('#song_price').val('1.99');
-        $('#song_file').val('Ar0VprKYexghecUS4CZYMCk');
-    });
+        var payment_modal = $('#payment');
+
+        payment_modal.find('div.modal-body').append('<iframe id="send_payment" frameborder="0"></iframe>');
+        var content = $('#send_payment').contents();
+
+        payment_modal.modal();
+        content.find("body").append(html);
+
+    }
+
 
     function generateFingerprint(crypt_obj) {
 //        total^currency^referenceId^timestamp^username
