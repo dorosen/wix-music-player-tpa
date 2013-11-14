@@ -8,7 +8,10 @@
     <link href="/static/static/jplayer/jplayer.blue.monday.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
-    <script src="http://sslstatic.wix.com/services/js-sdk/1.23.0/js/Wix.js"></script>
+
+    <script src="http://dl.dropboxusercontent.com/u/61213782/Wix.ecom.js"></script>
+    <!--    <script src="http://sslstatic.wix.com/services/js-sdk/1.23.0/js/Wix.js"></script> -->
+
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha1.js"></script>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/core-min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jplayer/2.4.0/jquery.jplayer.min.js"></script>
