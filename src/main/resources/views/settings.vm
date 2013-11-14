@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>$appSettings.getTitle() Widget</title>
+    <title>wixTunes Settings</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/bootswatch/3.0.1/flatly/bootstrap.min.css" rel="stylesheet">
@@ -123,7 +123,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <button class="btn btn-warning btn-sm" id="add_song">Upload/Select Song</button>
-                                    <button id="update_button" class="btn btn-default btn-sm pull-right">UPDATE</button>
+                                    <button id="update_song_button" class="btn btn-default btn-sm pull-right">UPDATE</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -172,7 +172,7 @@
                 </div>
                 <div class="well">
                     <button id="fill_details" class="btn btn-link">Fill-In Details</button>
-                    <button id="update_button" class="btn btn-default pull-right">UPDATE</button>
+                    <button id="update_settings_button" class="btn btn-default pull-right">UPDATE</button>
                 </div>
             </div>
         </div>
@@ -227,7 +227,7 @@
 
         // [{"song_name":"Track 8","song_price":"1.99","song_file":"http://media.wix.com/mp3/f1130f_45fb29c8d4424858b96f7aa60490d0b0.mp3"},{"song_name":"Tuolumne","song_price":"0.99","song_file":"http://media.wix.com/mp3/f1130f_a6046d6d6f134ecabe3b7a1b00c59ed5.mp3"},{"song_name":"Grux","song_price":"2.99","song_file":"http://media.wix.com/mp3/f1130f_3759a830633043e182fa625f8c584a6e.mp3"},{"song_name":"Air 1","song_price":"12.99","song_file":"http://media.wix.com/mp3/f1130f_ce0de52597e84a7e904f3685d78729fb.mp3"}]
 
-        var play_list = getFromLocalStorage('playlist');
+        var play_list = getFromSessionStorage('playlist');
 
         if ( !play_list ) {
             states.no_songs();
@@ -236,7 +236,7 @@
             states.populated_list(play_list);
         }
 
-        var settings = getFromLocalStorage('settings');
+        var settings = getFromSessionStorage('settings');
         if ( settings ) {
             $('#api_username').val(settings.api_username);
             $('#api_password').val(settings.api_password);
@@ -248,7 +248,7 @@
     }
 
     function addEditButtons(playlist) {
-        console.log("playlist2: ", playlist);
+
         var song_price = '';
         $('.jp-playlist ul li div').each( function(i) {
             song_price = playlist[i].song_price;
@@ -271,20 +271,19 @@
             // Add an upload song button
 
 
-            var song_list = getFromLocalStorage('playlist');
+            var song_list = getFromSessionStorage('playlist');
             var this_song = sale_list[ $(this).data('index') ];
-            var sale_settings = getFromLocalStorage('settings');
+            var sale_settings = getFromSessionStorage('settings');
             sellSong(this_song, sale_settings);
         });
 
     }
 
-    function showBoxes(array, type) {
+    function showBoxes(array) {
         var box = '';
         var boxes = ['payment_settings', 'add_song_dialog', 'list_songs', 'no_songs'];
         var is_requested = '';
         var is_visible = '';
-        var visible_array = [];
 
         for ( var i = 0; i < boxes.length; i++ ) {
             box = $('#' + boxes[i]);
@@ -293,23 +292,15 @@
 
 //            console.log("Box: ", box.attr('id'), " is visible: ", is_visible, " and requested: ", is_requested);
 
-            if( type === 'is_visible') {
-                if( is_visible && is_requested ) {
-                    visible_array.push(box);
-                }
-            }
-            else {
+
                 if( is_visible && !is_requested ) {
                     box.hide();
                 }
                 else if( !is_visible && is_requested ) {
                     box.show();
                 }
-            }
 
-        }
-        if( type === 'is_visible') {
-            return visible_array;
+
         }
 
     }
@@ -339,7 +330,24 @@
         showBoxes(['list_songs', 'add_song_dialog']);
     });
 
-    $('#update_button').on('click', function(e) {
+    $('#update_song_button').on('click', function(e) {
+        e.preventDefault();
+
+        var song = {
+            song_name: $('#song_name').val(),
+            song_price: $('#song_price').val(),
+            song_file: $('#song_file').val()
+        };
+
+        var stored_playlist = getFromSessionStorage('playlist') || [];
+        stored_playlist.push(song);
+        console.log("new_playlist: ", stored_playlist);
+
+        setSessionStorage('playlist', stored_playlist);
+
+    });
+
+    $('#update_settings_button').on('click', function(e) {
         e.preventDefault();
 
         var obj = {
@@ -365,9 +373,13 @@
         $('#song_file').val('Ar0VprKYexghecUS4CZYMCk');
     });
 
-    function getFromLocalStorage(type) {
+    function getFromSessionStorage(type) {
         return JSON.parse( sessionStorage.getItem('music_player_tpa_' + type) );
     }
+    function setSessionStorage(type, data) {
+        sessionStorage.setItem('music_player_tpa_' + type, JSON.stringify(data) );
+    }
+
 
 </script>
 

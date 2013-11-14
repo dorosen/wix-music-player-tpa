@@ -1,7 +1,7 @@
 
 var player = {
     init: function(display_type) {
-        var playlist_array = getFromLocalStorage('playlist');
+        var playlist_array = getFromSessionStorage('playlist');
         var jplayer_playlist = player.generatePlaylistForjPlayer(playlist_array);
         player.setPlayerHeight();
         player.buildMusicPlayer(jplayer_playlist, display_type);
@@ -29,7 +29,7 @@ var player = {
 
     },
     setPlayerHeight: function() {
-        var playlist_length = getFromLocalStorage('playlist').length;
+        var playlist_length = getFromSessionStorage('playlist').length;
         var playlist_height = 80 + 33 * playlist_length - 1;
 
         Wix.setHeight(playlist_height);
@@ -52,10 +52,10 @@ var player = {
             ready: function() {
                 if( display_type === 'editor' ) {
                     console.log("In Editor Mode");
-                    addEditButtons( getFromLocalStorage('playlist') );
+                    addEditButtons( getFromSessionStorage('playlist') );
                 }
                 else {
-                    addBuyButtons( getFromLocalStorage('playlist') );
+                    addBuyButtons( getFromSessionStorage('playlist') );
                 }
             }
         };
